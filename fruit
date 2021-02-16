@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+const inquirer = require('inquirer');
+const axios = require('axios');
+require('dotenv').config();
+const mainan = require('./server')
+const color = require('colors');
+process.stdout.write("\u001b[2J\u001b[0;0H");
+console.log(`
+
+█████████████╗██╗   ████████████╗    █████████████████╗   ████████╗█████████████╗ 
+██╔════██╔══████║   ████╚══██╔══╝    ██╔════██╔════████╗  ████╔══████╔════██╔══██╗
+█████╗ ██████╔██║   ████║  ██║       ████████████╗ ██╔██╗ ████║  ███████╗ ██████╔╝
+██╔══╝ ██╔══████║   ████║  ██║       ╚════████╔══╝ ██║╚██╗████║  ████╔══╝ ██╔══██╗
+██║    ██║  ██╚██████╔██║  ██║       ████████████████║ ╚██████████╔█████████║  ██║
+╚═╝    ╚═╝  ╚═╝╚═════╝╚═╝  ╚═╝       ╚══════╚══════╚═╝  ╚═══╚═════╝╚══════╚═╝  ╚═╝
+                                                                                  
+
+`.red.yellow);
+
+
+
+
+async function main() {
+	await axios
+		.post('https://sender.petanitest.com/api/checkip', { key: process.env.key })
+		.then((p) => {
+			// fs.writeFile('codot.js', p.data, (err) => {
+				inquirer
+				.prompt([
+					{ type: 'input', name: 'name', message: 'username' },
+					{ type: 'password', name: 'password', message: 'password' }
+				])
+				.then((p) => {
+					axios.post("https://sender.petanitest.com/api/login",{name:p.name,password:p.password})
+					.then(p =>{
+						process.stdout.write("\u001b[2J\u001b[0;0H");
+                                // fs.writeFile('server.js', p.data,async (err) => {
+                                        // if(err) return err;
+                                        // setTimeout(()=>{
+                                            mainan()
+                                        // },2000)
+                                // })  
+                            })
+                            .catch(e =>{
+                                console.log(e.response.data[0])
+                            });
+                    
+                    })
+					.catch((e) =>{
+                         console.log(e)
+                        })
+		})
+		.catch((e) => {
+			console.log(e);
+			console.log(process.exit(22))
+		});
+}
+
+main();
